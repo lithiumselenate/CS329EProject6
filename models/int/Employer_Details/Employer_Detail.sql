@@ -1,0 +1,56 @@
+{{ config(
+    post_hook = [
+        "drop table if exists {{ this.schema }}.matching",
+        "drop table if exists {{ this.schema }}.temp_emp",
+        "drop table if exists {{ this.schema }}.temp_employer_details",
+    ]
+) }}
+with ed as(
+select a.*, b.matched_fein as fein
+    from {{ ref('employer_details') }} as a
+    left join {{ ref('matching') }} as b
+    on a.employer_petitioner_name = b.original_name)
+, int_emp as (
+    SELECT
+    fein,
+    employer_no,
+    fiscal_year,
+    employer_petitioner_name,
+    tax_id,
+    naics_code,
+    petitioner_city,
+    petitioner_state,
+    petitioner_zip_code,
+    initial_approval,
+    initial_denial,
+    continuing_approval,
+    continuing_denial,
+    _data_source,
+    _load_time
+FROM (
+    SELECT
+        distinct employer_petitioner_name,
+        fein,
+        employer_no,
+        fiscal_year,
+        tax_id,
+        naics_code,
+        petitioner_city,
+        petitioner_state,
+        petitioner_zip_code,
+        initial_approval,
+        initial_denial,
+        continuing_approval,
+        continuing_denial,
+        _data_source,
+        _load_time,
+        ROW_NUMBER() OVER (PARTITION BY fein ORDER BY _load_time DESC) AS row_num
+    FROM
+        ed
+    WHERE
+        fein IS NOT NULL AND fein != ''
+)
+WHERE
+    row_num = 1
+)
+select * from int_emp where employer_petitioner_name is not null

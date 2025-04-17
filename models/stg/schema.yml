@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: cs329e_xh_raw
+    database: silken-fortress-448205-p9
+    schema: cs329e_xh_raw  
+    tables:
+      - name: company_data
+      - name: employer_details
+      - name: h1b_sentiment_analysis
+      - name: lca_appendix
+      - name: lca_disclosure
+      - name: lca_worksites
+      - name: pw_disclosure
+      - name: single_registrations
+      - name: wage_summary

@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: Employer_Detail
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: primary_key
+        columns:
+          - employer_petitioner_name
+    columns:
+      - name: employer_petitioner_name
+        data_type: string
+        description: "Primary key and foreign key to Company_Data.employer_name"
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('Company_Data')
+              field: employer_name
+
+      - name: fein
+        data_type: string
+      - name: employer_no
+        data_type: int64
+      - name: fiscal_year
+        data_type: int64
+      - name: tax_id
+        data_type: string
+      - name: naics_code
+        data_type: string
+      - name: petitioner_city
+        data_type: string
+      - name: petitioner_state
+        data_type: string
+      - name: petitioner_zip_code
+        data_type: string
+      - name: initial_approval
+        data_type: string
+      - name: initial_denial
+        data_type: int64
+      - name: continuing_approval
+        data_type: string
+      - name: continuing_denial
+        data_type: int64
+      - name: _data_source
+        data_type: string
+      - name: _load_time
+        data_type: datetime
+
+
+
+
+
